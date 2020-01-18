@@ -1,0 +1,191 @@
+import java.awt.Color;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.*;
+import java.io.*;
+import java.awt.Font;
+
+public class GUI {
+    private JFrame frame;
+    static Queue que;
+    public GUI() {
+        frame = new JFrame("Bubbles Program");
+        frame.setSize(800, 800);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setPreferredSize(frame.getSize());
+        frame.add(new InnerProgram(frame.getSize()));
+        frame.pack();
+        frame.setVisible(true);
+    }
+
+    public static void main(String... argv) {
+        new GUI();
+    }
+
+    public static class InnerProgram extends JPanel implements Runnable, MouseListener  {
+        BubbleGUI b = null;
+        ArrayList<String> names = new ArrayList<String>();
+        private Thread animator;
+        Dimension d;
+        String str = "";
+
+
+        public InnerProgram (Dimension dimension) {
+            
+            setSize(dimension);
+            setPreferredSize(dimension);
+            addMouseListener(this);
+            addKeyListener(new TAdapter());
+            setFocusable(true);
+            d = getSize();
+
+            //for animating the screen - you won't need to edit
+            if (animator == null) {
+                animator = new Thread(this);
+                animator.start();
+            }
+            setDoubleBuffered(true);
+        }
+
+        @Override
+        public void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D)g;
+
+            g2.setColor(Color.black);
+            g2.fillRect(0, 0,(int)d.getWidth() , (int)d.getHeight());
+
+            Color co = new Color(255,255,255);
+            g2.setColor(co);
+            int fontSize = 10;
+            g2.setFont(new Font("TimesRoman", Font.PLAIN, fontSize));
+            g2.drawString("String " + str,20,40);
+        if (que != null){
+         for(int i =0; i<que.size(); i++){
+            b = (BubbleGUI) que.get(i);
+            if (b!= null){
+                g2.setColor(b.color);
+                g2.fillOval(b.x, b.y, b.radius, b.radius);
+            }
+        }
+        }
+        mov();
+        }
+        public void mov(){
+            int max = 255;
+            int min = 0;
+            if(que!= null){
+                for(int i =0; i < que.size(); i++){
+                    b = (BubbleGUI) que.get(i);
+                    if (b != null){
+                        b.x += b.xSpeed;
+                        b.y += b.ySpeed;
+                    }
+                    if (b.x >= 730 || b.x <= 0){
+                        b.xSpeed *= -1;
+                    }
+                    if (b.y >= 730 || b.y <= 0){
+                        b.ySpeed *= -1;
+                    }
+                    if (i>0){
+                        BubbleGUI g = (BubbleGUI) que.get(i-1);
+                        if (g.x <= b.x +10 && g.x >= b.x -10){
+                            if (g.y <= b.y+10 && g.x >= b.y +10){
+                            b.color = new Color((int)(Math.random() * ((max - min) + 1)) + min,(int)(Math.random() * ((max - min) + 1)) + min,(int)(Math.random() * ((max - min) + 1)) + min);
+                            g.color = new Color((int)(Math.random() * ((max - min) + 1)) + min,(int)(Math.random() * ((max - min) + 1)) + min,(int)(Math.random() * ((max - min) + 1)) + min);
+                        }
+                        }
+                    }
+                }
+            }
+        
+        }
+        public int random (int a, int b){    
+            int max=a;
+            int min=b;
+            int random=(int)(Math.random() * (max - min) + min);
+
+            return random;
+        }
+
+        public void mousePressed(MouseEvent e) {
+            int r = 0;
+            int x = e.getX();
+            int y = e.getY();
+            str = x + " " + y;
+            b = new BubbleGUI(x,y);
+            if (que ==null){
+             que = new Queue(25);
+            }
+            que.insert(b);
+           
+        }
+
+        public void mouseReleased(MouseEvent e) {
+
+       
+        }
+
+        public void mouseEntered(MouseEvent e) {
+            
+        }
+
+        public void mouseExited(MouseEvent e) {
+
+        }
+
+        public void mouseClicked(MouseEvent e) {
+        }
+
+        private class TAdapter extends KeyAdapter {
+
+            public void keyReleased(KeyEvent e) {
+                int keyr = e.getKeyCode();
+
+            }
+
+            public void keyPressed(KeyEvent e) {
+                int key = e.getKeyCode();
+               // String c = KeyEvent.getKeyText(e.getKeyCode());
+              //  c = Character.toString((char) key);
+
+               
+
+               
+            }
+        }//end of adapter
+
+        public void run() {
+            long beforeTime, timeDiff, sleep;
+            beforeTime = System.currentTimeMillis();
+            int animationDelay = 37;
+            long time = System.currentTimeMillis();
+
+            while (true) {// infinite loop
+                // spriteManager.update();
+
+                repaint();
+                try {
+                    time += animationDelay;
+                    Thread.sleep(Math.max(0, time - System.currentTimeMillis()));
+                } catch (InterruptedException e) {
+                    System.out.println(e);
+                } // end catch
+
+            } // end while loop
+
+        }// end of run
+
+        
+       
+
+    }//end of class
+}
