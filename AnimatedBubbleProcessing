@@ -1,0 +1,57 @@
+int[] arr = new int[100];
+int width = 5;
+int y = 400;
+
+void setup(){
+   size(500,400);
+   setArr();
+   frameRate(10);
+   displayArr();
+}
+
+
+void draw(){       
+      
+        bubbleSort();
+      
+}
+
+
+void setArr(){
+  for(int x = 0; x < arr.length; x++){
+    arr[x]=(int)random(1,255);
+  }
+  
+}
+
+
+//selection sort
+    public void bubbleSort(){
+        int i = 0;
+            i++;
+            for (int j = 0; j < arr.length - i; j++) {
+
+                if (arr[j] > arr[j + 1]) {
+                    swap(arr, j, j + 1);
+                    
+                }
+
+            }
+    }
+    
+    void displayArr(){
+      for(int b = 0; b < arr.length; b++){
+        fill(arr[b],0,0);
+        rect(5*b,0,width,y);
+      }
+     
+ 
+    }
+    
+    public void swap(int[] x, int i, int j){
+        int temp = x[i];
+        x[i] = x[j];
+        x[j] = temp;
+        displayArr();
+
+    }
