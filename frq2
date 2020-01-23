@@ -1,0 +1,74 @@
+public class FreeResponse
+{
+    // Driver code
+    LinkedList list = new LinkedList();
+    LinkedList w = new LinkedList();
+    public FreeResponse()
+    {
+      String[] artists = {"Ariana Grande", "Ariana Grande", "Ariana Grande","Halsey","Halsey","Post Malone","Post Malone","Post Malone","Ariana Grande","Ariana Grande","Ariana Grande","Ariana Grande","Lady Gaga","Lady Gaga","Lady Gaga","Lady Gaga","Jonas Brothers","Jonas Brothers","Jonas Brothers","Jonas Brothers","Jonas Brothers","Jonas Brothers","Lil Nas X","Lil Nas X","Lil Nas X","Lil Nas X","Lil Nas X","Lil Nas X","Lil Nas X","Lil Nas X","Lil Nas X","Lil Nas X","Lil Nas X","Lil Nas X","Lil Nas X","Billie Eilish","Billie Eilish","Billie Eilish","Billie Eilish","Billie Eilish","Billie Eilish","Shawn Mendes","Lizzo","Lizzo","Lizzo","Lizzo","Lizzo","Lizzo","Travis Scott","Selena Gomez","Selena Gomez","Post Malone","Post Malone","Post Malone","Post Malone","The Weeknd","Mariah Carey","Mariah Carey"};
+      add(artists, list);
+      find(w, artists);
+      list.printList(list);
+      System.out.println(" ");
+      w.printList(w);
+      top3(w, artists);
+    }
+    public void add(String[] s, LinkedList e){
+    for (int i = 0; i < s.length; i++){
+        list.insert(e, s[i]);
+    }
+    frq1 r = new frq1();
+    r.removedup(e);
+    }
+    public void find(LinkedList l, String[] s){
+     //int b =1;
+        for (int i =0; i< s.length; i++){
+            int count = 0;
+            for(int b = 1; b<s.length; b++){
+                if (s[i] == s[b]){
+                    count++;
+                }          
+            }
+            l.insert(l, count);
+        }
+    }
+    public void top3(LinkedList t, String[] s){
+        int largest = 0;
+        int b =1;
+        int x =1;
+        int l =1;
+        int index = 0;
+        int largest2 = 0;
+        int largest3 = 0;
+        int index2 =0;
+        int index3 = 0;
+        for (int i =0; i< t.getSize(t); i++){
+            if ((int)t.get(t,b) > (int)t.get(t,i)){
+                largest = (int)t.get(t,b);
+                index = b;
+            }
+            b++;
+        }
+        t.remove(t, index);
+        for (int r =0; r< t.getSize(t); r++){
+            if ((int)t.get(t,x) > (int)t.get(t,r)){
+                largest2 = (int)t.get(t,x);
+                index2 = x;
+            }
+            x++;
+        }
+        t.remove(t, index2);
+        for (int e =0; e< t.getSize(t); e++){
+            if ((int)t.get(t,l) > (int)t.get(t,e)){
+                largest2 = (int)t.get(t,l);
+                index2 = l;
+            }
+            l++;
+        }
+        System.out.println(s[index] + " " + largest);
+        System.out.println(s[index2] + " " + largest2);
+        System.out.println(s[index3] + " " + largest3);
+    }
+    
+    
+}
