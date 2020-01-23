@@ -1,0 +1,32 @@
+
+public class frq1
+{
+    // instance variables - replace the example below with your own
+
+    /**
+     * Constructor for objects of class frq1
+     */
+    LinkedList list = new LinkedList();
+    public frq1()
+    {
+        // initialise instance variables
+        list.insert(list,5);
+        list.insert(list, 6);
+        list.insert(list, 6);
+        list.insert(list, 7);
+        list.insert(list, 7);
+        list.insert(list, 8);
+        removedup(list);
+    }
+    public void removedup(LinkedList list){
+        for(int i =0; i< list.getSize(list); i++){
+            for (int b =1; b< list.getSize(list); b++){
+                if (list.get(list, b) == list.get(list, i)){
+                    list.remove(list, b);
+                }
+            
+            }
+        }
+    }
+ 
+}
