@@ -1,0 +1,90 @@
+import java.net.*;
+import java.io.*;
+import java.util.StringTokenizer;
+import java.util.Scanner;
+import java.util.*;
+
+public class StockJson
+{
+
+    public StockJson()
+    {
+        String[] names = new String[10];
+    Double[] prices = new Double[10];
+        String[] sym = {"AAPL","IDXX","JBHT","JD","KLAC","KHC","LRCX","LBTYA","LBTYK","LULU"};
+        
+        for(int i=0; i<sym.length; i++){
+        String csvString = "";
+        URL url = null;
+        URLConnection urlConn = null;
+        InputStreamReader inStream = null;
+        BufferedReader buff = null;
+        try{
+            url = new URL("https://financialmodelingprep.com/api/company/profile/" + sym[i]);
+            urlConn = url.openConnection();
+            inStream = new InputStreamReader(urlConn.getInputStream());
+            buff= new BufferedReader(inStream);
+            // get the quote as a csv string
+            String s;
+            while ((s=buff.readLine())!=null){ 
+               // System.out.println(buff.readLine());
+               csvString += buff.readLine();
+                csvString += buff.readLine();
+            }
+            System.out.println("test: " + csvString);
+            prices[i] =   getPrice(csvString);
+            names[i] = sym[i];
+            //    String[] fd = loadStrings("https://financialmodelingprep.com/api/company/profile/" + sym);
+        } catch(Exception e){
+            System.out.println("ERROR, no PE");
+
+        }
+
+    }
+    selsort(prices, names);
+    System.out.println(Arrays.toString(prices));
+    System.out.println(Arrays.toString(names));
+
+    }
+    public void selsort(Double[] arr, String[] s){
+        for(int i=0; i< arr.length; i++){
+            for (int b = i+1; b<arr.length; b++){
+                if(arr[b] < arr[i]){
+                    Double temp = arr[i];
+                    String temp2 = s[i];
+                    arr[i] = arr[b];
+                    arr[b] = temp;
+                    s[i] = s[b];
+                    s[b] = temp2;
+                }
+            }
+        }
+    
+    }
+    public Double getPrice(String s){
+        String a = "";
+        int c = 0;
+           while(c<s.length()){
+            if (s.substring(c, c+1).equals(",")){
+                a = s.substring(c,c+1);
+                break;
+            }
+            c++;
+        }
+        
+        String p ="";
+        for (int i=0; i<s.length(); i++){
+            if (i>5){
+                if (s.substring(i-5,i).equals("Price")){
+                    p = s.substring(i+3, c);
+                }
+            }
+        }
+        Double d = Double.valueOf(p);
+        //System.out.println(d);
+        return d;
+        
+    }
+    
+
+}
