@@ -14,8 +14,11 @@ public class frequencyanalysis
         // initialise instance variables
         String text = "I love apple pie and apple juice. I also hate brownies.";
         caesar c = new caesar();
+        int max = 5;
+        int min =1;
+        int random=(int)(Math.random() * (max-min) +min);
         Queue q = new Queue(text.length());
-        text = c.encrypt(3,text, q);
+        text = c.encrypt(random,text, q);
         findfreq(text);
     }
 
