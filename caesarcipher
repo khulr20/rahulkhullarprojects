@@ -1,0 +1,64 @@
+
+/**
+ * Write a description of class caeser here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+import java.util.*;
+public class caeser
+{
+    // instance variables - replace the example below with your own
+
+    public caeser()
+    {
+        Scanner scan = new Scanner(System.in);
+        String test = scan.nextLine();
+        Queue q = new Queue(test.length());
+        Queue d = new Queue(test.length());
+        System.out.println(encrypt(3, test, q));
+        System.out.println(decrypt(3, encrypt(3, test, d), d));
+
+    }
+
+    public String encrypt(int shift, String s, Queue q){
+        String shifted = "";
+        for(int i=0; i< s.length(); i++){
+           char c = s.charAt(i);
+            int num = (int)c;
+            if (num==32){
+                c = (char)num;
+                shifted = shifted + c;
+                q.insert(c);
+            }
+            else{
+                num = (num+shift-97)%26+97;
+                c = (char)num;
+                shifted = shifted + c;
+                q.insert(c);
+            }
+        }
+        return shifted;
+    }
+
+    public String decrypt(int shift, String s, Queue q){
+        String shifted = "";
+        for(int i=0; i< s.length(); i++){
+            char c = s.charAt(i);
+            int num = (int)c;
+            if (num==32){
+                c = (char)num;
+                shifted = shifted + c;
+                q.insert(c);
+            }
+            else{
+                num = (num-shift-97)%26+97;
+                c = (char)num;
+                shifted = shifted + c;
+                q.insert(c);
+            }
+        }
+        return shifted;
+
+    }
+}
