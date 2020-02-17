@@ -1,0 +1,75 @@
+
+/**
+ * Write a description of class Player1 here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+import java.util.*;
+public class Player1 extends Thread
+{
+    // instance variables - replace the example below with your own
+    LinkedList hand = new LinkedList();
+    LinkedList pile1 = new LinkedList();
+    Pile1 pil1;
+    cardmain ex = new cardmain();
+    Player2 p2 = new Player2();
+
+    public Player1(){
+        hand = ex.handgen(hand, ex.q);
+        pil1 = new Pile1(pile1);
+
+    }
+    public void run(){
+        
+        draw(pil1, hand);
+        discard(p2, hand);
+        System.out.println("Player 1 hand: ");
+        for(int i=0; i<hand.getSize(hand); i++){
+            System.out.print((int)hand.get(hand, i) + " ");
+        }
+        win(hand, ex);
+    }
+
+    public void draw(Pile1 p, LinkedList hand){
+        p.draw(hand);
+        System.out.println("Player 1 draws a:" + (int)hand.get(hand, hand.getSize(hand)-1));
+    }
+
+    public void discard(Player2 p2, LinkedList hand){
+        int r = getRandom(0,3);
+        int count = 1;
+        for(int i=0; i<hand.getSize(hand); i++){
+            if ((int)hand.get(hand, i) != 0 && (int)hand.get(hand, i) != 1){
+                p2.pile2.insert(p2.pile2, hand.get(hand, i));
+                System.out.println("Player 1 discards a:" + (int)hand.get(hand, i));
+                hand.remove(hand, i);
+                break;
+            }
+            count++;
+        }
+        if(count == hand.getSize(hand)){
+            p2.pile2.insert(p2.pile2, hand.get(hand, 0));
+            System.out.println("Player 1 discards a:" + (int)hand.get(hand, 0));
+            hand.remove(hand, 0);
+        }
+    }
+
+    public void win(LinkedList hand, cardmain ex){
+        int i=0;
+        if ((int)hand.get(hand, i) == (int)hand.get(hand, i+1) && (int)hand.get(hand, i+2) == (int)hand.get(hand, i+3) && (int)hand.get(hand, i) == (int)hand.get(hand, i+2)){
+            System.out.println("Player 1 wins!");
+            ex.win = true;
+        }
+    }
+
+    private static int getRandom(int min, int max) {
+
+        if (min >= max) {
+            throw new IllegalArgumentException("max must be greater than min");
+        }
+
+        Random r = new Random();
+        return r.nextInt((max - min) + 1) + min;
+    }
+}
