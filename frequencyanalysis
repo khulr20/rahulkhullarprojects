@@ -1,0 +1,44 @@
+
+/**
+ * Write a description of class frequencyanalysis here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+public class frequencyanalysis
+{
+    // instance variables - replace the example below with your own
+
+    public frequencyanalysis()
+    {
+        // initialise instance variables
+        String text = "I love apple pie and apple juice. I also hate brownies.";
+        caesar c = new caesar();
+        Queue q = new Queue(text.length());
+        text = c.encrypt(3,text, q);
+        findfreq(text);
+    }
+
+    public void findfreq(String s){
+        s = s.toLowerCase();
+        for(int i=0; i< s.length(); i++){
+            int count =1;
+            char c = s.charAt(i);
+            for(int b=i+1; b<s.length(); b++){
+                char d = s.charAt(b);
+                if (d ==c){
+                    count++;
+                }
+            }
+            if (Character.toString(c).equals(" ")){
+                System.out.print("");
+            }
+            else{
+                System.out.println("Char:" + c + " freq: " + count);
+            }
+            s = s.replaceAll(Character.toString(c), " ");
+        }
+
+    }
+
+}
