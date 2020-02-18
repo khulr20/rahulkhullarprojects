@@ -1,0 +1,56 @@
+
+
+public class UPC
+{
+
+    public UPC()
+    {
+        // initialise instance variables
+        String x ="22222222222";
+        HashTable table = new HashTable(11);
+        int[] arr = createArr(x);
+        System.out.println(finddig(arr));
+    }
+    public int finddig(int[] arr){
+        int sum1=0;
+        for(int i=0; i<arr.length; i++){
+            sum1 += arr[i];
+            i++;
+        }
+        sum1 *= 3;
+        int sum2=0;
+        for(int b=1; b<arr.length; b++){
+            sum2 += arr[b];
+            b++;
+        }
+        int total = sum1+sum2;
+        int x=0;
+        while(total %10 !=0){
+            x++;
+            total +=x;
+        }
+        
+        return x;
+
+    }
+    public void createTab(String x, HashTable table){
+        for(int i=0; i<x.length(); i++){
+            char c = x.charAt(i);
+            String t = Character.toString(c);
+            HashNode a = new HashNode(i + "", Integer.parseInt(t));
+            table.add(a);
+        }
+    }
+    public int[] createArr(String x){
+        int[] arr = new int[11];
+
+        for(int i=0; i< x.length(); i++){
+            char c = x.charAt(i);
+            String t = Character.toString(c);
+            arr[i] = Integer.parseInt(t);
+        }
+        return arr;
+    }
+
+
+}
