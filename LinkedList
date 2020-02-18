@@ -1,0 +1,164 @@
+import java.io.*; 
+  
+// Java program to implement 
+// a Singly Linked List 
+public class LinkedList<V> { 
+  
+    Node head; // head of list 
+    
+    // Method to insert a new node 
+    public LinkedList insert(LinkedList list, V data) 
+    { 
+        // Create a new node with given data 
+        Node new_node = new Node(data); 
+        new_node.next = null; 
+  
+        // If the Linked List is empty, 
+        // then make the new node as head 
+        if (list.head == null) { 
+            list.head = new_node; 
+        } 
+        else { 
+            // Else traverse till the last node 
+            // and insert the new_node there 
+            Node last = list.head; 
+            while (last.next != null) { 
+                last = last.next; 
+            } 
+  
+            // Insert the new_node at last node 
+            last.next = new_node; 
+        } 
+  
+        // Return the list by head 
+        return list; 
+    } 
+    
+    // Method to print the LinkedList. 
+    public void printList(LinkedList list) 
+    { 
+        Node currNode = list.head; 
+   
+        System.out.print("LinkedList: "); 
+   
+        // Traverse through the LinkedList 
+        while (currNode != null) { 
+            // Print the data at current node 
+            System.out.print(currNode.data + " "); 
+   
+            // Go to next node 
+            currNode = currNode.next; 
+        } 
+    } 
+   
+    
+    
+    // removes the element at the specified position in this list.
+    public boolean remove(LinkedList list,int index) {
+ 
+        // if the index is out of range, exit
+        if (index < 1)// || index > getSize(list))
+            return false;
+ 
+        Node currNode = list.head;
+        if (head != null) {
+            for (int i = 0; i < index-1; i++) {
+                if (currNode.getNext() == null)
+                    return false;
+ 
+                currNode = currNode.getNext();
+            }
+            //System.out.println("data: " + currNode.data);
+            currNode.setNext(currNode.getNext().getNext());
+ 
+            // decrement the number of elements variable
+            
+            return true;
+ 
+        }
+        return false;
+    }
+    
+    // Method to print the LinkedList. 
+    public int getSize(LinkedList list) 
+    { 
+        Node currNode = list.head; 
+        int num = 0;
+   
+        // Traverse through the LinkedList 
+        while (currNode != null) { 
+            num++;
+
+            // Go to next node 
+            currNode = currNode.next; 
+        } 
+        return num;
+    } 
+    public V get(LinkedList list, int index){
+        Node n = list.head;
+        if (index==0){
+            return (V)n.data;
+        }
+        if (index >= getSize(list)){
+            System.out.println("Out of bounds");
+        }
+        for(int i = 0; i <getSize(list); i++){
+            if (i==index){
+               return (V)n.data;
+            }
+            else{
+                n = n.getNext();
+            }
+        }
+        return (V)n.data;
+    }
+    public void addToFront(LinkedList list, V data){
+        Node new_node = new Node(data);
+        Node new_node2 = list.head;
+        new_node.next = new_node2;
+        head = new_node;
+    }
+        public int find(LinkedList list, V dat) {
+        Node n = list.head;
+        int size = list.getSize(list); 
+        for (int i=0; i < size; i++) {
+            if (dat.equals(n.data)) {
+                return i; 
+            }
+            n = n.getNext();
+        }
+        return -1; 
+    }
+    public V deleteFront(LinkedList list){
+        Node currNode = list.head;
+        if(head == null){
+            return null;
+        }
+        else{
+            if (currNode.getNext() == null){
+                head = null;
+                return (V)currNode.data;
+            }
+            else{
+                Node tempNode = currNode;
+                currNode = currNode.next;
+                head = currNode;
+                return (V)tempNode.data;
+            }
+        }
+    }
+    public void set(LinkedList list, int index, int val){
+        int i = 0;
+        Node currNode = list.head;
+       if (head != null){
+       while(i!= index){
+            if (i== index){
+                break;
+            }
+            i++;
+            currNode = currNode.next;
+        }
+        currNode.data = val;
+    }
+    }
+}
