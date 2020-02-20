@@ -1,0 +1,591 @@
+
+/**
+ * Write a description of class cardDriver here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+public class cardDriver extends Thread
+{
+    // instance variables - replace the example below with your own
+    
+    public cardDriver()
+    {
+        // initialise instance variables
+        Player1 p1 = new Player1();
+        //Player2 p2 = new Player2();
+        //Player3 p3 = new Player3();
+        //Player4 p4 = new Player4();
+        //p1.setPriority(10);
+        //p2.setPriority(4);
+        //p3.setPriority(3);
+        //p4.setPriority(2);
+        //cardmain ex = new cardmain();
+        while(p1.ex.win != true){
+            p1.run();
+            /*
+            try{
+            p1.join();
+            }
+            catch(Exception e){
+                System.out.println(e);
+            }
+            */
+            //p2.run();
+            //p3.run();
+            //p4.run();
+        }
+    }
+
+    
+}
+import java.util.*;
+
+/**
+ * Write a description of class cardmain here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+public class cardmain
+{
+
+    Queue q = new Queue(32);
+    boolean win = false;
+    public cardmain()
+    {
+        for(int i=0; i < 32; i++){
+            int r = getRandom(0, 7);
+            q.insert(r);
+        }
+        
+    }
+    
+    public  ArrayList<Integer> handgen(ArrayList<Integer> list, Queue deck){
+       for(int i=0; i<4; i++){
+           list.add((int)deck.get(i));
+           deck.remove();
+        }
+       return list;   
+    }
+    public  ArrayList<Integer> pilegen(ArrayList<Integer> list, Queue deck){
+       for(int i=0; i<4; i++){
+           list.add((int)deck.get(i));
+           deck.remove();
+        }
+       return list;   
+    }
+    private static int getRandom(int min, int max) {
+
+        if (min >= max) {
+            throw new IllegalArgumentException("max must be greater than min");
+        }
+
+        Random r = new Random();
+        return r.nextInt((max - min) + 1) + min;
+    }
+}
+
+/**
+ * Write a description of class Player1 here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+import java.util.*;
+public class Player1
+{
+    // instance variables - replace the example below with your own
+    ArrayList<Integer> hand = new ArrayList<Integer>();
+    ArrayList<Integer> pile1 = new ArrayList<Integer>();
+    Pile1 pil1;
+    cardmain ex = new cardmain();
+    Player2 p2 ;
+    Player3 p3 ;
+    Player4 p4 ;
+    public Player1(){
+        hand = ex.handgen(hand, ex.q);
+        pil1 = new Pile1(pile1);
+        p2 = new Player2(ex);
+        p3 = new Player3(ex);
+        p4 = new Player4(ex);
+    }
+
+    public void run(){
+
+        draw(pil1, hand);
+        discard(p2, hand);
+        printhand(hand);
+        win(hand, ex);
+        p2.draw(p2.pil2, p2.hand);
+        p2.discard(p3, p2.hand);
+        printhand(p2.hand);
+        p2.win(p2.hand, ex);
+        p3.draw(p3.pil3, p3.hand);
+        p3.discard(p4, p3.hand);
+        printhand(p3.hand);
+        p3.win(p3.hand, ex);
+        p4.draw(p4.pil4, p4.hand);
+        discardspec(p4.hand);
+        printhand(p4.hand);
+        p4.win(p4.hand, ex);
+    }
+
+    public void draw(Pile1 p, ArrayList<Integer> hand){
+        p.draw(hand);
+        System.out.println("Player 1 draws a:" + (int)hand.get(hand.size()-1));
+    }
+
+    public void discard(Player2 p2, ArrayList<Integer> hand){
+        int r = getRandom(0,3);
+        boolean went = false;
+        for(int i=0; i<hand.size(); i++){
+            if ((int)hand.get(i) != 0 && (int)hand.get(i) != 1){
+                p2.pile2.add(hand.get(i));
+                System.out.println("Player 1 discards a non preferred:" + (int)hand.get(i));
+                hand.remove(i);
+                went=true;
+                break;
+            }
+        }
+        if(went=false){
+            p2.pile2.add(hand.get(0));
+            System.out.println("Player 1 discards a:" + (int)hand.get(0));
+            hand.remove(0);
+        }
+    }
+
+    public void discardspec(ArrayList<Integer> hand){
+        int r = getRandom(0,3);
+        boolean went = false;
+        for(int i=0; i<hand.size(); i++){
+            if ((int)hand.get(i) != 6 && (int)hand.get(i) != 7){
+                pile1.add(hand.get(i));
+                System.out.println("Player 4 discards a non preferred:" + (int)hand.get(i));
+                hand.remove(i);
+                went=true;
+                break;
+            }
+        }
+        if(went=false){
+            pile1.add(hand.get(0));
+            System.out.println("Player 4 discards a:" + (int)hand.get(0));
+            hand.remove(0);
+        }
+    }
+
+    public void printhand(ArrayList<Integer> hand){
+        System.out.println("hand: ");
+        for(int i=0; i<hand.size(); i++){
+            System.out.print((int)hand.get(i) + " ");
+        }
+    }
+
+    public void win(ArrayList<Integer> hand, cardmain ex){
+        int i=0;
+        if(hand.size()>3){
+            if ((int)hand.get(i) == (int)hand.get(i+1) && (int)hand.get(i+2) == (int)hand.get(i+3) && (int)hand.get(i) == (int)hand.get(i+2)){
+                System.out.println("Player 1 wins!");
+                ex.win = true;
+            }
+        }
+    }
+
+    private static int getRandom(int min, int max) {
+
+        if (min >= max) {
+            throw new IllegalArgumentException("max must be greater than min");
+        }
+
+        Random r = new Random();
+        return r.nextInt((max - min) + 1) + min;
+    }
+}
+
+/**
+ * Write a description of class Player1 here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+import java.util.*;
+public class Player2
+{
+    // instance variables - replace the example below with your own
+    ArrayList<Integer> hand = new ArrayList<Integer>();
+    ArrayList<Integer> pile2 = new ArrayList<Integer>();
+    Pile2 pil2;
+    //cardmain ex = new cardmain();
+    //Player3 p3 = new Player3();
+
+    public Player2(cardmain ex){
+        hand = ex.handgen(hand, ex.q);
+        pil2 = new Pile2(pile2);
+
+    }
+
+    public void run(){
+        /*
+        draw(pil2, hand);
+        discard(p3, hand);
+        System.out.println("Player 2 hand: ");
+        for(int i=0; i<hand.getSize(hand); i++){
+        System.out.print((int)hand.get(hand, i) + " ");
+        }
+        win(hand, ex);
+         */
+    }
+
+    public void draw(Pile2 p, ArrayList<Integer> hand){
+        p.draw(hand);
+        System.out.println("Player 2 draws a:" + (int)hand.get(hand.size()-1));
+    }
+
+    public void discard(Player3 p3, ArrayList<Integer> hand){
+        int r = getRandom(0,3);
+        boolean went = false;
+        for(int i=0; i<hand.size(); i++){
+            if ((int)hand.get(i) != 2 && (int)hand.get(i) != 3){
+                p3.pile3.add(hand.get(i));
+                System.out.println("Player 2 discards a non preferred:" + (int)hand.get(i));
+                hand.remove(i);
+                went=true;
+                break;
+            }
+        }
+        if(went=false){
+            p3.pile3.add(hand.get(0));
+            System.out.println("Player 2 discards:" + (int)hand.get(0));
+            hand.remove(0);
+        }
+    }
+
+    public void win(ArrayList<Integer> hand, cardmain ex){
+        int i=0;
+        if(hand.size()>3){
+            if ((int)hand.get(i) == (int)hand.get(i+1) && (int)hand.get(i+2) == (int)hand.get(i+3) && (int)hand.get(i) == (int)hand.get(i+2)){
+                System.out.println("Player 2 wins!");
+                ex.win = true;
+            }
+        }
+    }
+
+    private static int getRandom(int min, int max) {
+
+        if (min >= max) {
+            throw new IllegalArgumentException("max must be greater than min");
+        }
+
+        Random r = new Random();
+        return r.nextInt((max - min) + 1) + min;
+    }
+}
+
+/**
+ * Write a description of class Player1 here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+import java.util.*;
+public class Player3
+{
+    // instance variables - replace the example below with your own
+    ArrayList<Integer> hand = new ArrayList<Integer>();
+    ArrayList<Integer> pile3 = new ArrayList<Integer>();
+    Pile3 pil3;
+    //cardmain ex = new cardmain();
+    //Player4 p4 = new Player4();
+
+    public Player3(cardmain ex){
+        hand = ex.handgen(hand, ex.q);
+        pil3 = new Pile3(pile3);
+
+    }
+
+    public void run(){
+        /*
+        draw(pil3, hand);
+        discard(p4, hand);
+        System.out.println("Player 3 hand: ");
+        for(int i=0; i<hand.getSize(hand); i++){
+        System.out.print((int)hand.get(hand, i) + " ");
+        }
+        win(hand, ex);
+         */
+    }
+
+    public void draw(Pile3 p, ArrayList<Integer> hand){
+        p.draw(hand);
+        System.out.println("Player 3 draws a:" + (int)hand.get(hand.size()-1));
+    }
+
+    public void discard(Player4 p4, ArrayList<Integer> hand){
+        int r = getRandom(0,3);
+        boolean went = false;
+        for(int i=0; i<hand.size(); i++){
+            if ((int)hand.get(i) != 4 && (int)hand.get(i) != 5){
+                p4.pile4.add(hand.get(i));
+                System.out.println("Player 3 discards a non preferred:" + (int)hand.get(i));
+                hand.remove(i);
+                went =true;
+                break;
+            }
+        }
+        if(went = false){
+            p4.pile4.add(hand.get(0));
+            System.out.println("Player 3 discards:" + (int)hand.get(0));
+            hand.remove(0);
+        }
+    }
+
+    public void win(ArrayList<Integer> hand, cardmain ex){
+        int i=0;
+        if(hand.size()>3){
+            if ((int)hand.get(i) == (int)hand.get(i+1) && (int)hand.get(i+2) == (int)hand.get(i+3) && (int)hand.get(i) == (int)hand.get(i+2)){
+                System.out.println("Player 3 wins!");
+                ex.win = true;
+            }
+        }
+    }
+
+    private static int getRandom(int min, int max) {
+
+        if (min >= max) {
+            throw new IllegalArgumentException("max must be greater than min");
+        }
+
+        Random r = new Random();
+        return r.nextInt((max - min) + 1) + min;
+    }
+}
+
+/**
+ * Write a description of class Player1 here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+import java.util.*;
+public class Player4
+{
+    // instance variables - replace the example below with your own
+    ArrayList<Integer> hand = new ArrayList<Integer>();
+    ArrayList<Integer> pile4 = new ArrayList<Integer>();
+    Pile4 pil4;
+    //cardmain ex = new cardmain();
+    //Player1 p1= new Player1();
+    ;
+    public Player4(cardmain ex){
+        hand = ex.handgen(hand, ex.q);
+        pil4 = new Pile4(pile4);
+    }
+
+    public void run(){
+        /*
+        draw(pil4, hand);
+        discard(p1, hand);
+        System.out.println("Player 4 hand: ");
+        for(int i=0; i<hand.getSize(hand); i++){
+        System.out.print((int)hand.get(hand, i) + " ");
+        }
+        win(hand, ex);
+         */
+    }
+
+    public void draw(Pile4 p, ArrayList<Integer> hand){
+        p.draw(hand);
+        System.out.println("Player 4 draws a:" + (int)hand.get(hand.size()-1));
+    }
+
+    public void discard(Player1 p1, ArrayList<Integer> list){
+        int r = getRandom(0,3);
+        boolean went = false;
+        for(int i=0; i<hand.size(); i++){
+            if ((int)hand.get(i) != 6 && (int)hand.get(i) != 7){
+                p1.pile1.add(hand.get(i));
+                System.out.println("Player 4 discards a:" + (int)hand.get(i));
+                hand.remove(i);
+                went = true;
+                break;
+            }
+        }
+        if(went = false){
+            p1.pile1.add(hand.get(0));
+            System.out.println("Player 4 discards a:" + (int)hand.get(0));
+            hand.remove(0);
+        }
+    }
+
+    public void win(ArrayList<Integer> hand, cardmain ex){
+        int i=0;
+        if(hand.size()>3){
+            if ((int)hand.get(i) == (int)hand.get(i+1) && (int)hand.get(i+2) == (int)hand.get(i+3) && (int)hand.get(i) == (int)hand.get(i+2)){
+                System.out.println("Player 4 wins!");
+                ex.win = true;
+            }
+        }
+    }
+
+    private static int getRandom(int min, int max) {
+
+        if (min >= max) {
+            throw new IllegalArgumentException("max must be greater than min");
+        }
+
+        Random r = new Random();
+        return r.nextInt((max - min) + 1) + min;
+    }
+}
+
+/**
+ * Write a description of class Pile1 here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+import java.util.*;
+public class Pile1
+{
+    // instance variables - replace the example below with your own
+    ArrayList<Integer> list;
+    cardmain ex = new cardmain();
+
+    public Pile1(ArrayList<Integer> list)
+    {
+        // initialise instance variables
+        this.list = new ArrayList<Integer>();
+        this.list = ex.pilegen(list, ex.q);
+    }
+
+    public void draw(ArrayList<Integer> hand){
+        int r =getRandom(0,3);
+        hand.add(list.get(r));
+        list.remove(r);       
+    }
+
+    private static int getRandom(int min, int max) {
+
+        if (min >= max) {
+            throw new IllegalArgumentException("max must be greater than min");
+        }
+
+        Random r = new Random();
+        return r.nextInt((max - min) + 1) + min;
+    }
+
+}
+
+/**
+ * Write a description of class Pile2 here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+import java.util.*;
+public class Pile2 
+{
+    ArrayList<Integer> list;
+    cardmain ex = new cardmain();
+
+    public Pile2(ArrayList<Integer> list)
+    {
+        // initialise instance variables
+        this.list = new ArrayList<Integer>();
+        this.list = ex.pilegen(list, ex.q);
+    }
+
+    public void draw(ArrayList<Integer> hand){
+        int r =getRandom(0,3);
+        hand.add(list.get(r));
+        list.remove(r);
+
+    }
+
+    private static int getRandom(int min, int max) {
+
+        if (min >= max) {
+            throw new IllegalArgumentException("max must be greater than min");
+        }
+
+        Random r = new Random();
+        return r.nextInt((max - min) + 1) + min;
+    }
+
+}
+
+/**
+ * Write a description of class Pile2 here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+import java.util.*;
+public class Pile3 
+{
+    ArrayList<Integer> list;
+    cardmain ex = new cardmain();
+
+    public Pile3(ArrayList<Integer> list)
+    {
+        // initialise instance variables
+        this.list = new ArrayList<Integer>();
+        this.list = ex.pilegen(list, ex.q);
+    }
+
+    public void draw(ArrayList<Integer> hand){
+        int r =getRandom(0,3);
+        hand.add(list.get(r));
+        list.remove(r);
+
+    }
+
+    private static int getRandom(int min, int max) {
+
+        if (min >= max) {
+            throw new IllegalArgumentException("max must be greater than min");
+        }
+
+        Random r = new Random();
+        return r.nextInt((max - min) + 1) + min;
+    }
+
+}
+
+/**
+ * Write a description of class Pile2 here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+import java.util.*;
+public class Pile4 
+{
+    ArrayList<Integer> list;
+    cardmain ex = new cardmain();
+
+    public Pile4(ArrayList<Integer> list)
+    {
+        // initialise instance variables
+        this.list = new ArrayList<Integer>();
+        this.list = ex.pilegen(list, ex.q);
+    }
+
+    public void draw(ArrayList<Integer> hand){
+        int r =getRandom(0,3);
+        hand.add(list.get(r));
+        list.remove(r);
+
+    }
+
+    private static int getRandom(int min, int max) {
+
+        if (min >= max) {
+            throw new IllegalArgumentException("max must be greater than min");
+        }
+
+        Random r = new Random();
+        return r.nextInt((max - min) + 1) + min;
+    }
+
+}
