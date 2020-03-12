@@ -67,9 +67,7 @@ public class Tree
             int d = highestdoll(root,rem);
             rem = rem - d;
             System.out.println("Used: " + d + " dollars");
-            System.out.println(rem + " dollars are left");
         }
-        System.out.println(c + " bills were used.");  
     }
 
     public boolean find(int value, Node root){
