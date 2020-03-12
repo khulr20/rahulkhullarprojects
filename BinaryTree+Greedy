@@ -140,3 +140,84 @@ public class Tree
         }
     }    
 }
+
+/**
+ * Write a description of class Driver here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+import java.util.*;
+public class Driver
+{
+    // instance variables - replace the example below with your own
+
+    public Driver()
+    {
+        // initialise instance variables
+        Tree tree = new Tree();
+        int[] nums = {1 ,2 ,5 ,10 ,20 ,50 ,100 ,500 ,1000};
+        Arrays.sort(nums);
+        int high = nums.length-1;
+        int low =0;
+        int middle =low + (high - low) / 2;
+        Node root = new Node(nums[middle]);
+        tree.mid(nums,0, nums.length, root);
+        tree.showvalues(root);
+        tree.find(6, root);
+        tree.findhighest(root);
+        tree.greedy(root);
+    }
+    
+
+    
+
+}
+public class Node {
+  
+    int data;
+    Node left, right;
+  
+    Node(int d) {
+        data = d;
+        left = right = null;
+    }
+}
+
+/**
+ * Write a description of class Activity here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+import java.util.*;
+public class Activity
+{
+    // instance variables - replace the example below with your own
+
+    public Activity()
+    {
+        // initialise instance variables
+        int[] start = {10,12,20};
+        int[] finish = {20,25, 30};
+        int n=2;
+        System.out.println(ac(2,start,finish));
+    }
+    public ArrayList<Integer> ac(int n, int[] start, int[] finish){
+        ArrayList<Integer> arr = new ArrayList<Integer>();
+        int b =0;
+        arr.add(b);
+        for(int i=1; i< finish.length; i++){
+            if(arr.size()> n){
+                break;
+            }
+            if(start[i] >= finish[b]){
+                arr.add(i);
+                b=i;
+            }
+        }
+        return arr;
+    }
+
+
+}
