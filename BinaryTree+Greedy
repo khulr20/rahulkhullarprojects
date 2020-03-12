@@ -1,0 +1,142 @@
+
+/**
+ * Write a description of class Tree here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+public class Tree
+{
+    // instance variables - replace the example below with your own
+
+    public Tree()
+    {
+        // initialise instance variables
+    }
+
+    public void insert(Node node, int value) {
+
+        /* 1. If the tree is empty, return a new,   
+        single node */
+        if (value < node.data) {
+            if (node.left != null) {
+                insert(node.left, value);
+            } else {
+                System.out.println("  Inserted " + value + " to left of Node " + node.data);
+                node.left = new Node(value);
+            }
+        } else if (value > node.data) {
+            if (node.right != null) {
+                insert(node.right, value);
+            } else {
+                System.out.println("  Inserted " + value + " to right of Node " + node.data);
+                node.right = new Node(value);
+            }
+        }
+    }
+
+    public void showvalues(Node root){
+
+        System.out.println(root.data);
+        if (root.left !=null){
+            showvalues(root.left);
+        }
+        if (root.right != null){
+            showvalues(root.right);
+        }
+    }
+
+    public void mid(int[] ml, int low, int high, Node root){
+        if(low<high){
+            int middle = low + (high - low) / 2;
+            // Sort the left side of the array
+            insert(root, ml[middle]);
+            mid(ml, low, middle, root);
+
+            // Sort the right side of the array
+            mid(ml, middle + 1, high, root);
+        }
+    }
+
+    public void greedy(Node root){
+        int value = 129; 
+        int rem = value; 
+        int c = 0;
+        while (rem != 0) {
+            c += 1;
+            int d = highestdoll(root,rem);
+            rem = rem - d;
+            System.out.println("Used: " + d + " dollars");
+            System.out.println(rem + " dollars are left");
+        }
+        System.out.println(c + " bills were used.");  
+    }
+
+    public boolean find(int value, Node root){
+        if (value == root.data){
+            System.out.println("Value: " + root.data);
+            return true;
+        }
+        if (root.left != null){
+            find(value, root.left);
+        }
+        if(root.right != null){
+            find(value, root.right);
+        }
+        return false;
+    }
+
+    public static int highestdoll(Node root, int value) {
+        int d = 1; 
+        if (root.data < value) {
+            int highest = root.data;
+            while (root.data < value && root.right != null) {
+                highest = root.data; 
+                root = root.right;
+            }
+
+            while (root.left != null && root.data > value) {
+                root = root.left;
+            }
+
+            if (root.data > value) {
+                d = highest; 
+            } else {
+                d = root.data;
+            }
+        }
+        else if (root.data == value) {
+            d = root.data;
+        }
+        else {
+            int lowest = root.data; 
+            while (root.data > value && root.left != null) {
+                lowest = root.left.data;
+                root = root.left;
+            }
+
+            while (root.right != null & root.data < value) {
+                root = root.right;
+            }
+
+            if (root.data > value) {
+                d = lowest;
+            } 
+            else {
+                d = root.data;
+            }
+        }
+        return d; 
+    }
+
+    public void findhighest(Node root){
+        int high = root.data;
+        if(root.right == null){
+            System.out.println("Highest: " + high);
+        }
+
+        if (root.right != null && root.right.data > high){
+            findhighest(root.right);
+        }
+    }    
+}
