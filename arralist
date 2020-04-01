@@ -1,0 +1,111 @@
+
+
+/**
+ * Write a description of class arrdriv here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+import java.util.*;
+public class arrdriv
+{
+    // instance variables - replace the example below with your own
+
+    public arrdriv()
+    {
+        // initialise instance variables
+        arraylist a = new arraylist();
+        int min = 1, max = 100;
+        for (int i = 0; i < 10; i++){
+            a.add(rand(min, max));
+        }
+        for(int i=0; i<a.size(); i++){
+            System.out.println(a.get(i));
+        }
+        System.out.println("size:" + a.size());
+        a.add(2,9);
+        a.set(0,7);
+        a.remove(1);
+        a.remove(3);
+        for(int i=0; i<a.size(); i++){
+            System.out.println(a.get(i));
+        }
+    }
+
+    public static int rand(int min, int max)
+    {
+        if (min > max || (max - min + 1 > Integer.MAX_VALUE)) {
+            throw new IllegalArgumentException("Invalid range");
+        }
+
+        return new Random().nextInt(max - min + 1) + min;
+    }
+}
+
+/**
+ * Write a description of class arraylist here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+public class arraylist
+{
+    // instance variables - replace the example below with your own
+    int[] arr = new int[0];
+    public arraylist()
+    {
+        // initialise instance variables
+    }
+    public void add(int val){
+       int[] temp = new int[arr.length+1];
+       cal(arr,temp);
+       temp[arr.length] = val;
+       arr = temp;
+    }
+    public void add(int index, int val){
+        int[] temp = new int[arr.length+1];
+        cal(arr,temp);
+        if(index < arr.length){
+            int te = temp[index];
+            temp[index] = val;
+            for(int i=index+1; i<temp.length; i++){
+                int s = temp[i];
+                temp[i] = te;
+                te = s;
+            }
+        }
+        else if(index==arr.length){
+            temp[index] = val;
+        }
+        arr = temp;
+    }
+    public void remove(int index){
+        int[] temp = new int[arr.length-1];
+        for(int i=0; i<temp.length; i++){
+            int x =i;
+            if (i>=index){
+                x=i+1;
+            }
+            temp[i] =arr[x];
+        }
+        arr = temp;
+    }
+    public void set(int index, int val){
+        arr[index] = val;
+    }
+    public int size(){
+        int size =0;
+        for(int i=0; i<arr.length; i++){
+            size++;
+        }
+        return size;
+    }
+    public int get(int index){
+        return arr[index];
+    }
+    public void cal(int[] arr1, int[] arr2){
+        for(int i=0; i<arr1.length; i++){
+            arr2[i] = arr1[i];
+        }
+    }
+}
