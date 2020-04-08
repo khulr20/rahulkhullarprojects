@@ -1,0 +1,174 @@
+
+/**
+ * Write a description of class Graph here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+import java.util.*;
+public class Graph
+{
+    int size;
+    ArrayList<Integer>[] arr;
+    public Graph(int s)
+    {
+        size=s;
+        arr = new ArrayList[size];
+        for(int i=0; i<size; i++){
+            arr[i] = new ArrayList<Integer>();
+        }
+    }
+
+    public void addEdge(int x, int y){
+        boolean x1 = false;
+        boolean y1 = false;
+        for(int i=0; i< arr.length; i++){
+            if(arr[i].size()>0){
+                if(arr[i] != null && arr[i].get(0)== x){
+                    arr[i].add(y);
+                    x1 = true;
+                }
+                if(arr[i] != null && arr[i].get(0)== y){
+                    arr[i].add(x);
+                    y1 = true;
+                }
+            }
+        }
+        if(x1 == false){
+            int i=0;
+            while(arr[i].size()>0){
+                if(i>=size){
+                    break;
+                }
+                i++;
+            }
+            arr[i].add(x);
+            arr[i].add(y);
+        }
+        if(y1 == false ){
+            int i=0;
+            while(arr[i].size()>0){
+                if(i>=size){
+                    break;
+                }
+                i++;
+            }
+            arr[i].add(y);
+            arr[i].add(x);
+        }
+    }
+
+    public int arrcont (ArrayList<Integer>[] arr, int val) {
+        for (int a = 0; a < arr.length; a++) {
+            if (arr[a] != null && arr[a].get(0) == val) {
+                return a;
+            }
+        }
+        return -1;
+    }
+
+    public boolean listcont (ArrayList<Integer> arr, int val) {
+        for (int a = 0; a < arr.size(); a++) {
+            if (arr.get(a) != null && arr.get(a) == val) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void shortest(int s, int d,ArrayList<ArrayList<Integer>> fin, ArrayList<Integer> prev){
+        int c= arrcont(arr, s);
+        prev.add(s);
+        if(listcont(arr[c],d)){
+            prev.add(d);
+            fin.add(prev);
+            return;
+        }
+        boolean hit = false;
+        int temp =s;
+        while(hit==false){
+            for(int i=1; i< arr[c].size(); i++){
+                int x= arrcont(arr,arr[c].get(i));
+                if(listcont(arr[x],d)){
+                    prev.add(arr[x].get(0));
+                    fin.add(prev);
+                    hit=true;
+                    break;
+                }
+                for(int b=1; b<arr[x].size(); b++){
+                    int e = arrcont(arr, arr[x].get(b));
+                    if(listcont(arr[e],d)){
+                        prev.add(arr[x].get(0));
+                        prev.add(arr[e].get(0));
+                        fin.add(prev);
+                        prev.remove(prev.size()-1);
+                        prev.remove(prev.size()-1);
+                    }
+                }
+            }
+            int t=1;
+            while(arr[c].get(t) == temp){
+                t++;
+            }
+            temp = arr[c].get(0);
+            c=arrcont(arr,arr[c].get(t));
+            prev.add(arr[c].get(0));
+        }
+        for(int w=0; w<fin.size();w++){
+            fin.get(w).set(fin.get(w).size()-1,d);
+        }
+    }
+
+    public void getEdge(int index){
+        for(int i=0; i< arr[index].size(); i++){
+            System.out.print(arr[index].get(i) + " ");
+        }
+        System.out.println("");
+    }
+
+    public int size(){
+        return size;
+    }
+
+}
+
+/**
+ * Write a description of class graphrunner here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+import java.util.*;
+public class graphrunner
+{
+    // instance variables - replace the example below with your own
+
+    public graphrunner()
+    {
+        // initialise instance variables
+        Graph g = new Graph(8);
+
+        g.addEdge(0,1);
+        g.addEdge(0,3);
+        g.addEdge(1,2);
+        g.addEdge(3,4);
+        g.addEdge(3,7);
+        g.addEdge(4,5);
+        g.addEdge(4,6);
+        g.addEdge(4,7);
+        g.addEdge(5,6);
+        g.addEdge(6,7);
+        for(int i=0; i<g.size(); i++){
+            g.getEdge(i);
+        }
+        int s =1;
+        int d = 6;
+        ArrayList<ArrayList<Integer>> fin = new ArrayList();
+        ArrayList<Integer> prev = new ArrayList();
+        int temp=s;
+        g.shortest(s,d,fin,prev);
+        System.out.println(fin.get(0)+ " and size is:" + fin.get(0).size());
+
+    }
+
+}
