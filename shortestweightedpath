@@ -1,0 +1,297 @@
+
+/**
+ * Write a description of class Graph here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+import java.util.*;
+public class Graph
+{
+    int size;
+    ArrayList<Integer>[] arr;
+    ArrayList<Integer>[] weights;
+    public Graph(int s)
+    {
+        size=s;
+        arr = new ArrayList[size];
+        for(int i=0; i<size; i++){
+            arr[i] = new ArrayList<Integer>();
+        }
+        weights = new ArrayList[size];
+        for(int i=0; i<size; i++){
+            weights[i] = new ArrayList<Integer>();
+        }
+    }
+
+    public void addEdge(int x, int y, int weight){
+        boolean x1 = false;
+        boolean y1 = false;
+        for(int i=0; i< arr.length; i++){
+            if(arr[i].size()>0){
+                if(arr[i] != null && arr[i].get(0)== x){
+                    arr[i].add(y);
+                    weights[i].add(weight);
+                    x1 = true;
+                }
+                if(arr[i] != null && arr[i].get(0)== y){
+                    arr[i].add(x);
+                    weights[i].add(weight);
+                    y1 = true;
+                }
+            }
+        }
+        if(x1 == false){
+            int i=0;
+            while(arr[i].size()>0){
+                if(i>=size){
+                    break;
+                }
+                i++;
+            }
+            arr[i].add(x);
+            arr[i].add(y);
+            weights[i].add(weight);
+        }
+        if(y1 == false ){
+            int i=0;
+            while(arr[i].size()>0){
+                if(i>=size){
+                    break;
+                }
+                i++;
+            }
+            arr[i].add(y);
+            arr[i].add(x);
+            weights[i].add(weight);
+        }
+    }
+
+    public int arrcont (ArrayList<Integer>[] arr, int val) {
+        for (int a = 0; a < arr.length; a++) {
+            if (arr[a] != null && arr[a].get(0) == val) {
+                return a;
+            }
+        }
+        return -1;
+    }
+
+    public boolean listcont (ArrayList<Integer> arr, int val) {
+        for (int a = 0; a < arr.size(); a++) {
+            if (arr.get(a) != null && arr.get(a) == val) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int shortest(int tot, int s, int d,ArrayList<ArrayList<Integer>> fin, ArrayList<Integer> prev){
+        int c= arrcont(arr, s);
+        prev.add(s);
+        int sum=tot;
+        if(listcont(arr[c],d)){
+            prev.add(d);
+            sum+=weights[c].get(arr[c].indexOf(d)-1);
+            fin.add(prev);
+            return tot;
+        }
+        boolean hit = false;
+        boolean add = false;
+        int temp =s;
+        sort();
+        while(hit==false){
+            if(listcont(arr[c],d)){
+                fin.add(prev);
+                sum+=weights[c].get(arr[c].indexOf(d)-1);
+                tot=sum;
+                hit=true;
+                add=true;
+            }
+            int t=1;
+            while(true){
+                if(arr[c].size() <3){
+                    break;
+                }
+                if(arr[c].get(t) == temp){
+                    t++;
+                }
+                else{
+                    break;
+                }
+            }
+            temp = arr[c].get(0);
+            if(add==false){
+                sum+=weights[c].get(t-1);
+            }
+            c=arrcont(arr,arr[c].get(t));
+            prev.add(arr[c].get(0));
+        }
+        for(int w=0; w<fin.size();w++){
+            fin.get(w).set(fin.get(w).size()-1,d);
+        }
+        fin.get(0).set(0,-1);
+        if (listcont(fin.get(0),s)){
+            while(fin.get(0).get(0)!=s){
+                fin.get(0).remove(0);
+            }
+        }
+        else{
+            fin.get(0).set(0,s);
+        }
+        return tot;
+    }
+
+    public int shortest2(int tot1, int s, int d,ArrayList<ArrayList<Integer>> fin, ArrayList<Integer> prev, int count){
+        int c= arrcont(arr, s);
+        prev.add(s);
+        int sum =tot1;
+        if(listcont(arr[c],d)){
+            prev.add(d);
+            sum+=weights[c].get(arr[c].indexOf(d)-1);
+            tot1=sum;
+            fin.add(prev);
+            return tot1;
+        }
+        boolean hit = false;
+        boolean add =false;
+        int temp =s;
+        sort();
+        while(hit==false){
+            if(listcont(arr[c],d)){
+                fin.add(prev);
+                sum+=weights[c].get(arr[c].indexOf(d)-1);
+                tot1=sum;
+                hit=true;
+                add=true;
+            }
+            int t=1;
+            while(true){
+                if(arr[c].size() <3){
+                    break;
+                }
+                if(listcont(fin.get(count),arr[c].get(t)) || arr[c].get(t) == temp){
+                    t++;
+                }
+                else{
+                    break;
+                }
+            }
+            temp = arr[c].get(0);
+            if(add==false){
+                sum+=weights[c].get(t-1);
+            }
+            c=arrcont(arr,arr[c].get(t));
+            prev.add(arr[c].get(0));
+        }
+        for(int w=0; w<fin.size();w++){
+            fin.get(w).set(fin.get(w).size()-1,d);
+        }
+        fin.get(count).set(0,-1);
+        if (listcont(fin.get(count),s)){
+            while(fin.get(count).get(0)!=s){
+                fin.get(count).remove(0);
+            }
+        }
+        else{
+            fin.get(count).set(0,s);
+        }
+        return tot1;
+    }
+
+    public void sort(){
+        for(int i=0; i< arr.length; i++){
+            for(int b=1; b<arr[i].size(); b++){
+                for(int c=b+1; c<arr[i].size();c++){
+                    if(weights[i].get(c-1)<weights[i].get(b-1)){
+                        int temp = weights[i].get(b-1);
+                        weights[i].set(b-1,weights[i].get(c-1));
+                        weights[i].set(c-1,temp);
+                        int temp1 = arr[i].get(b);
+                        arr[i].set(b,arr[i].get(c));
+                        arr[i].set(c,temp1);
+                    }
+                }
+            }
+        }
+    }
+
+    public void getEdge(int index){
+        sort();
+        for(int i=0; i< arr[index].size(); i++){
+            if(i<1){
+                System.out.print(arr[index].get(i) + " ");
+            }
+            else{
+                System.out.print(arr[index].get(i) + " weight: " + weights[index].get(i-1) + "| ");
+            }
+        }
+        System.out.println("");
+    }
+
+    public int size(){
+        return size;
+    }
+
+}
+
+/**
+ * Write a description of class graphrunner here.
+ *
+ * @author (your name)
+ * @version (a version number or a date)
+ */
+import java.util.*;
+public class graphrunner
+{
+    // instance variables - replace the example below with your own
+
+    public graphrunner()
+    {
+        // initialise instance variables
+        Graph g = new Graph(6);
+
+        g.addEdge(0,1,4);
+        g.addEdge(0,2,3);
+        g.addEdge(1,2,5);
+        g.addEdge(1,3,2);
+        g.addEdge(2,3,7);
+        g.addEdge(3,4,2);
+        g.addEdge(4,0,4);
+        g.addEdge(4,1,4);
+        g.addEdge(4,5,6);
+        /*
+        g.addEdge(0,1,0);
+        g.addEdge(0,3,0);
+        g.addEdge(1,2,0);
+        g.addEdge(3,4,0);
+        g.addEdge(3,7,0);
+        g.addEdge(4,5,0);
+        g.addEdge(4,6,0);
+        g.addEdge(4,7,0);
+        g.addEdge(5,6,0);
+        g.addEdge(6,7,0);
+         */
+        for(int i=0; i<g.size(); i++){
+            g.getEdge(i);
+        }
+        int s =5;
+        int d = 2;
+        ArrayList<ArrayList<Integer>> fin = new ArrayList();
+        ArrayList<Integer> prev = new ArrayList();
+        int tot =0;
+        tot=g.shortest(tot,s,d,fin,prev);
+        int count=0;
+        int tot1=0;
+        ArrayList<Integer> prev2 = new ArrayList();
+        tot1 =g.shortest2(tot1,s,d,fin,prev2,count);
+        if(tot>tot1){
+            tot=tot1;
+            System.out.println(fin.get(1)+ " is the shortest weighted path with weight of " +tot);
+        }
+        else{
+            System.out.println(fin.get(0)+ " is the shortest weighted path with weight of " +tot);
+
+        }
+
+    }
+}
