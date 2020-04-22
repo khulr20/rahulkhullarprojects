@@ -1,0 +1,314 @@
+import java.awt.Color;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.WindowConstants;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.util.*;
+import java.io.*;
+import java.awt.Font;
+
+public class puzzle {
+    private JFrame frame;
+
+    public puzzle() {
+        frame = new JFrame("8-Puzzle Game");
+        frame.setSize(800, 800);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setPreferredSize(frame.getSize());
+        frame.add(new InnerProgram(frame.getSize()));
+        frame.pack();
+        frame.setVisible(true);
+    }
+
+    public static void main(String... argv) {
+        new puzzle();
+    }
+
+    public static class InnerProgram extends JPanel implements Runnable, MouseListener  {
+
+        ArrayList<String> names = new ArrayList<String>();
+        private Thread animator;
+        Dimension d;
+        String str = "";
+        String solvable = "Solvable: ";
+        String win = "";
+        int[][] vals = new int[3][3];
+
+        public InnerProgram (Dimension dimension) {
+            setSize(dimension);
+            setPreferredSize(dimension);
+            addMouseListener(this);
+            addKeyListener(new TAdapter());
+            setFocusable(true);
+            d = getSize();
+
+            //for animating the screen - you won't need to edit
+            if (animator == null) {
+                animator = new Thread(this);
+                animator.start();
+            }
+            setDoubleBuffered(true);
+        }
+
+        @Override
+        public void paintComponent(Graphics g) {
+            Graphics2D g2 = (Graphics2D)g;
+
+            g2.setColor(Color.black);
+            g2.fillRect(0, 0,(int)d.getWidth() , (int)d.getHeight());
+
+            Color co = new Color(255,255,255);
+            g2.setColor(co);
+            int fontSize = 10;
+            g2.setFont(new Font("TimesRoman", Font.PLAIN, fontSize));
+            g2.drawString("Position: " + str,393,485);
+            g2.drawRect(0,0,360,360);
+            g2.drawRect(0,0,120,120);
+            g2.drawRect(120,0,120,120);
+            g2.drawRect(240,0,120,120);
+            g2.drawRect(0,120,120,120);
+            g2.drawRect(120,120,120,120);
+            g2.drawRect(240,120,120,120);
+            g2.drawRect(0,240,120,120);
+            g2.drawRect(120,240,120,120);
+            g2.drawRect(240,240,120,120);
+            g2.drawString(vals[0][0]+"", 60,60);
+            g2.drawString(vals[0][1]+"", 180,60);
+            g2.drawString(vals[0][2]+"", 300,60);
+            g2.drawString(vals[1][0]+"", 60,180);
+            g2.drawString(vals[1][1]+"", 180,180);
+            g2.drawString(vals[1][2]+"", 300,180);
+            g2.drawString(vals[2][0]+"", 60,300);
+            g2.drawString(vals[2][1]+"", 180,300);
+            g2.drawString(vals[2][2]+"", 300,300);
+            g2.drawRect(251,586,100,100);
+            g2.drawString("Randomize",280,636);
+            g2.drawString(solvable,393,507);
+            g2.drawString(win,393,529);
+        }
+
+        public void randomize(){
+            ArrayList<Integer> ex = new ArrayList();
+            for(int i=0; i<3;i++){
+                for(int b=0; b<3;b++){
+                    int rand = random(0,9);
+                    while(ex.contains(rand)==true){
+                        rand = random(0,9);
+                    }
+                    vals[i][b] = rand;
+                    ex.add(rand);
+                }
+            }
+            if(isSolvable()){
+                solvable="Solvable: Yes";            
+            }
+            else{
+                solvable="Solvable: No";
+            }
+        }
+
+        public boolean checkwin(){
+            int[] win = {1,2,3,4,5,6,7,8,0};
+            int[] arr = new int[9];
+            int count=0;
+            for(int i=0; i<3;i++){
+                for(int b=0; b<3;b++){
+                    arr[count] = vals[i][b];
+                    count++;
+                }
+            }
+            if(arr==win){
+                return true;
+            }
+            return false;
+        }
+
+        public int locr(){
+            for(int i=0; i<3;i++){
+                for(int b=0; b<3;b++){
+                    if(vals[i][b]==0){
+                        return i;
+                    }
+                }
+            }
+            return -1;
+        }
+
+        public int locc(){
+            for(int i=0; i<3;i++){
+                for(int b=0; b<3;b++){
+                    if(vals[i][b]==0){
+                        return b;
+                    }
+                }
+            }
+            return -1;
+        }        
+
+        public boolean checkadj(int r, int c){
+            if(r==locr() && c==locc()){
+                return false;
+            }
+            if(r==locr()){
+                if(c+1==locc() || c-1==locc() || locc()+1==c || locc()-1==c){
+                    return true;
+                }
+            }
+            if(c==locc()){
+                if(r+1==locr() || r-1 ==locr() || locr()+1==r || locr()-1==r){
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public boolean isSolvable(){
+            int[] arr = new int[8];
+            int count=0;
+            for(int i=0; i<3;i++){
+                for(int b=0; b<3;b++){
+                    if(vals[i][b]!=0){
+                        arr[count] = vals[i][b];
+                        count++;
+                    }
+                }
+            }
+            int invs=0;
+            for(int c=0; c<arr.length;c++){
+                for(int x=c; x<arr.length; x++){
+                    if(arr[c]>arr[x]){
+                        invs++;
+                    }  
+                }
+            }
+            if(invs%2==0){
+                return true;
+            }
+            return false;
+        }
+
+        public void swap(int r, int c){
+            int temp = vals[r][c];
+            int tempr =locr();
+            int tempc = locc();
+            vals[r][c] = 0;
+            vals[tempr][tempc] = temp;
+        }
+
+        public int random (int a, int b){    
+            int max=a;
+            int min=b;
+            int random=(int)(Math.random() * (max - min) + min);
+            return random;
+        }
+
+        public void mousePressed(MouseEvent e) {
+            int x = e.getX();
+            int y = e.getY();
+            str = x + " " + y;
+            if(x>251 && x <351 && y>586 && y<686){
+                randomize();
+            }
+            if(x>0 && x<120 && y>0 && y<120){
+                if(checkadj(0,0)){
+                    swap(0,0);
+                }
+            }
+            if(x>120 && x<240 && y>0 && y<120){
+                if(checkadj(0,1)){
+                    swap(0,1);
+                }
+            }
+            if(x>240 && x<360 && y>0 && y<120){
+                if(checkadj(0,2)){
+                    swap(0,2);
+                }
+            }
+            if(x>0 && x<120 && y>120 && y<240){
+                if(checkadj(1,0)){
+                    swap(1,0);
+                }
+            }
+            if(x>120 && x<240 && y>120 && y<240){
+                if(checkadj(1,1)){
+                    swap(1,1);
+                }
+            }
+            if(x>240 && x<360 && y>120 && y<240){
+                if(checkadj(1,2)){
+                    swap(1,2);
+                }
+            }
+            if(x>0 && x<120 && y>240 && y<360){
+                if(checkadj(2,0)){
+                    swap(2,0);
+                }
+            }
+            if(x>120 && x<240 && y>240 && y<360){
+                if(checkadj(2,1)){
+                    swap(2,1);
+                }
+            }
+            if(x>240 && x<360 && y>240 && y<360){
+                if(checkadj(2,2)){
+                    swap(2,2);
+                }
+            }
+            if(checkwin()){
+                win = "Game Won!";
+            }
+        }
+
+        public void mouseReleased(MouseEvent e) {
+        }
+
+        public void mouseEntered(MouseEvent e) {
+        }
+
+        public void mouseExited(MouseEvent e) {
+        }
+
+        public void mouseClicked(MouseEvent e) {
+        }
+
+        private class TAdapter extends KeyAdapter {
+
+            public void keyReleased(KeyEvent e) {
+                int keyr = e.getKeyCode();
+
+            }
+
+            public void keyPressed(KeyEvent e) {
+                int key = e.getKeyCode();
+                // String c = KeyEvent.getKeyText(e.getKeyCode());
+                //  c = Character.toString((char) key);
+
+            }
+        }//end of adapter
+
+        public void run() {
+            long beforeTime, timeDiff, sleep;
+            beforeTime = System.currentTimeMillis();
+            int animationDelay = 37;
+            long time = System.currentTimeMillis();
+            while (true) {// infinite loop
+                // spriteManager.update();
+                repaint();
+                try {
+                    time += animationDelay;
+                    Thread.sleep(Math.max(0, time - System.currentTimeMillis()));
+                } catch (InterruptedException e) {
+                    System.out.println(e);
+                } // end catch
+            } // end while loop
+        }// end of run
+
+    }//end of class
+}
