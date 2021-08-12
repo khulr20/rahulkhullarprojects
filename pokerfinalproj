@@ -1,9 +1,9 @@
 
 /**
  * Write a description of class Poker here.
- *
- * @author (your name)
- * @version (a version number or a date)
+ * Playable Poker Game with functional AI
+ * @author (Rahul Khullar)
+ * @version (1.0)
  */
 import java.util.*;
 public class Poker
